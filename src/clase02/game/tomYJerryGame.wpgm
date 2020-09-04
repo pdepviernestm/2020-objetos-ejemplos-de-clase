@@ -1,7 +1,0 @@
-import wollok.game.*
-import juego.*
-
-program tomYJerryGame {
-	juego.configurar()
-	game.start()
-}

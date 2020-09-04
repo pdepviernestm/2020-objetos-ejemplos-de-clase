@@ -8,13 +8,13 @@ Introducción a objetos. Conceptos:
 
 ## Clase 2
 
-Testing: pruebas manuales (REPL, Wollok Game) vs. testeo unitario.
+Intro a desarrollo con TDD.
+Conceptos:
+- Bloques
 
 ## Clase 3
 
-Conceptos:
-- Bloques
-- Colecciones
+Ejercitación con TDD.
 
 ## Clase 4
 
@@ -24,37 +24,35 @@ Conceptos:
 
 ## Clase 5
 
-Ejercitación con clases y colecciones. Testeo de casos excepcionales.
+Conceptos:
+- Colecciones
 
 ## Clase 6
 
 Conceptos:
- - Herencia simple
- - Method Lookup
- - Redefinición (incluyendo super)
+ - Excepciones
+ - ¿Cómo testear excepciones?
 
 ## Clase 7
 
 Conceptos:
-  - Herencia vs Composición
-  - Identidad y encapsulamiento
+  - Herencia
+  - De nuevo Method Lookup
+  - super
   
 ## Clase 8
 
 Conceptos:
- - Continuación excepciones: self.error() vs. throw
- - Manejo incluyendo try/catch y testeo
+ - Herencia vs Composición
+ - Identidad
 
 ## Clase 9
 
-Práctica integradora
+Conceptos:
+  - Manejo de errores.
+
+Ejercitación con TDD.
 
 ## Clase 10
 
-Práctica integradora
-
-# Ejemplos de años anteriores
-
-- [2017](https://github.com/pdep-mit/ejemplos-de-clase-wollok/tree/ejemplos-2017)
-- [2018](https://github.com/pdep-mit/ejemplos-de-clase-wollok/tree/ejemplos-2018)
-- [2019](https://github.com/pdep-mit/ejemplos-de-clase-wollok/tree/ejemplos-2019)
+Ejercitación con parcial.
