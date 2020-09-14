@@ -1,0 +1,36 @@
+import bonoporporcentaje.*
+import bonodemontofijo.*
+import cadete.*
+import gerente.*
+import pepe.*
+
+object validar {
+	method sueldoDePepeConCategoriaEs(categoria, sueldoEsperado) {
+        pepe.categoria(categoria)
+        assert.equals(sueldoEsperado, pepe.sueldo())
+	}
+}
+
+describe "Sueldo de Pepe" {
+	test "cuando es gerente y no tiene bonos por
+			resultado ni por presentismo es 15000" {
+		validar.sueldoDePepeConCategoriaEs(gerente, 15000)
+	}
+	test "cuando es cadete y no tiene bonos por
+			resultado ni por presentismo es 20000" {
+		validar.sueldoDePepeConCategoriaEs(cadete, 20000)
+	}
+	test "cuando cobra bono por resultado de monto fijo
+           cobra 800 pesos mas que el neto de su categoria" {
+        pepe.bonoPorResultado(bonoDeMontoFijo)
+        
+        validar.sueldoDePepeConCategoriaEs(cadete, 20800)
+        validar.sueldoDePepeConCategoriaEs(gerente, 15800)
+   }
+   test "cuando cobra bono por resultado de pategoria" {
+		pepe.bonoPorResultado(bonoPorPorcentaje)
+		
+		validar.sueldoDePepeConCategoriaEs(cadete, 22000)
+		validar.sueldoDePepeConCategoriaEs(gerente, 16500)
+	}
+}
