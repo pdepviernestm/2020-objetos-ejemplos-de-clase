@@ -1,0 +1,71 @@
+import personamoderada.*
+import personaapurada.*
+import micro.*
+
+
+describe "punto 1" {
+
+	test "una persona apurada se sube siempre que el micro tiene lugar" {
+		
+		const microConLugar = new Micro(maximoPersonasSentadas = 1, maximoPersonasParadas = 1)
+		const persona = new PersonaApurada()
+	
+		assert.that(microConLugar.puedeSubir(persona))
+	}
+	
+	test "si el micro no tiene lugar no se puede subir" {
+		const microSinLugar = new Micro(maximoPersonasSentadas = 0, maximoPersonasParadas = 0)
+		const persona = new PersonaApurada()
+	
+		assert.notThat(microSinLugar.puedeSubir(persona))
+	}
+	
+	test "una persona moderada se puede subir al micro" {
+		const microConLugar = new Micro(maximoPersonasSentadas = 1, maximoPersonasParadas = 1)
+		const persona = new PersonaModerada(minimoEspacioDisponible = 2)
+	
+		assert.that(microConLugar.puedeSubir(persona))
+	}
+	
+	test "una persona moderada no se sube si no quedan suficientes lugares" {
+		const microSinSuficienteLugar = new Micro(maximoPersonasSentadas = 1, maximoPersonasParadas = 0)
+		const persona = new PersonaModerada(minimoEspacioDisponible = 2)
+	
+		assert.notThat(microSinSuficienteLugar.puedeSubir(persona))
+	}
+}
+
+describe "punto 2" {
+	test "subir a una persona apurada ok" {
+		
+		const cantidadDeLugares = 5
+		
+		const micro = new Micro(maximoPersonasSentadas = cantidadDeLugares, maximoPersonasParadas = 0)
+		const persona = new PersonaApurada()
+		
+		micro.subirA(persona)
+		
+		assert.equals(4, micro.cuantosLugaresLibresQuedan())
+	}
+	
+	test "subir a una persona moderada cuando no quedan suficientes lugares tira error" {
+		const cantidadDeLugares = 2
+	
+		const micro = new Micro(maximoPersonasSentadas = cantidadDeLugares, maximoPersonasParadas = 0)
+		const persona = new PersonaModerada(minimoEspacioDisponible = 3)
+		
+		assert.throwsException({micro.subirA(persona)})
+		assert.equals(2, micro.cuantosLugaresLibresQuedan())
+	}
+	
+	test "el micro se puede llenar" {
+		const cantidadDeLugares = 1
+		
+		const micro = new Micro(maximoPersonasSentadas = cantidadDeLugares, maximoPersonasParadas = 0)
+		const persona = new PersonaApurada()
+		
+		micro.subirA(persona)
+		
+		assert.notThat(micro.hayLugar())
+	}
+}
