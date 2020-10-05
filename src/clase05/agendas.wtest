@@ -1,0 +1,126 @@
+import agenda.*
+import estados.*
+
+describe "Agenda" {
+	test "una agenda vacía tiene 0 tareas" {
+		const agenda = new Agenda()
+		
+		assert.equals(0, agenda.cantidadTareas())
+	}
+	test "al agregar una nueva tarea, la cantidad de tareas aumenta en uno" {
+		const agenda = new Agenda()
+		
+		agenda.agendar("Preparar clase", new Date(year=2020, month=10, day=1))
+		
+		assert.equals(1, agenda.cantidadTareas())
+	}
+	test "le puedo pedir una tarea por su descripcion" {
+		const agenda = new Agenda()
+		
+		agenda.agendar("Preparar clase", new Date(year=2020, month=10, day=1))
+		
+		const tarea = agenda.tarea("Preparar clase")
+		
+		assert.equals("Preparar clase", tarea.descripcion())
+		assert.equals(paraHacer, tarea.estado())
+		assert.equals(new Date(year=2020, month=10, day=1), tarea.fechaLimite())
+	}
+
+	test "si le pido una tarea que no existe, falla" {
+		const agenda = new Agenda()
+		
+		assert.throwsException { agenda.tarea("Regar las plantas") }
+	}
+
+	test "sacar una tarea disminuye la cantidad de tareas en uno" {
+		const agenda = new Agenda()
+		agenda.agendar("Preparar clase", new Date(year=2020, month=10, day=1))
+		
+		agenda.borrar("Preparar clase")
+		
+		assert.equals(0, agenda.cantidadTareas())
+	}
+	
+	test "si agregamos una segunda tarea con el mismo nombre
+			reemplaza a la que ya estaba" {
+		const agenda = new Agenda()
+		agenda.agendar("Preparar clase", new Date(year=2020, month=10, day=1))
+		
+		agenda.agendar("Preparar clase", new Date(year=2020, month=10, day=8))
+		
+		assert.equals(1, agenda.cantidadTareas())
+		assert.equals(new Date(year=2020, month=10, day=8),
+					  agenda.tarea("Preparar clase").fechaLimite())
+	}
+	
+	test "si le pedimos todas las descripciones cuando no tiene tareas
+			nos da una lista vacia" {
+		const agenda = new Agenda()
+		
+		assert.equals([], agenda.descripciones())			
+	}
+	
+	test "si le pedimos todas las descripciones nos da una lista con
+			las descripciones de sus tareas" {
+		const agenda = new Agenda()
+		
+		agenda.agendar("Preparar clase", new Date(year=2020, month=10, day=8))
+		agenda.agendar("Regar plantas", new Date(year=2020, month=10, day=8))		
+		
+		assert.equals(["Preparar clase", "Regar plantas"], agenda.descripciones())
+	}
+	
+	test "si no tiene tareas pendientes, pedir la mas urgente falla" {
+		const agenda = new Agenda()
+		agenda.agendar("Preparar clase", new Date(year=2020, month=10, day=8))
+		agenda.tarea("Preparar clase").estado(terminada)
+		
+		assert.throwsException { agenda.tareaMasUrgente() }
+	}
+	
+	test "si tiene solo una tarea pendiente, esa es la mas urgente" {
+		const agenda = new Agenda()
+		agenda.agendar("Preparar clase", new Date(year=2020, month=10, day=8))
+		
+		assert.equals(agenda.tarea("Preparar clase"),
+					  agenda.tareaMasUrgente())
+	}
+	
+	test "si tiene varias tareas pendientes, la mas urgente es aquella
+			con fecha limite mas cercana" {
+		const agenda = new Agenda()
+		agenda.agendar("Preparar clase", new Date(year=2020, month=10, day=3))
+		agenda.agendar("Regar plantas", new Date(year=2020, month=10, day=2))
+		agenda.agendar("Hacer mate", new Date(year=2020, month=10, day=1))
+		agenda.tarea("Hacer mate").estado(cancelada)
+		
+		assert.equals(agenda.tarea("Regar plantas"),
+						agenda.tareaMasUrgente())
+	}
+	
+	test "si tiene un filtro de alguna etiqueta, la cantidad de tareas
+			toma en cuenta solo aquellas con esa etiqueta" {
+		const agenda = new Agenda()
+		agenda.agendar("Preparar clase", new Date(year=2020, month=10, day=2))
+		agenda.agendar("Regar plantas", new Date(year=2020, month=10, day=1))
+		agenda.tarea("Preparar clase").agregarEtiqueta("facu")
+		
+		agenda.filtradaPorEtiqueta("facu")
+		
+		assert.equals(1, agenda.cantidadTareas())
+		assert.equals(["Preparar clase"], agenda.descripciones())
+		assert.equals(agenda.tarea("Preparar clase"), agenda.tareaMasUrgente())
+	}
+	
+	test "limpiar borra todas las 	tareas que no estén pendientes" {
+		const agenda = new Agenda()
+		agenda.agendar("Preparar clase", new Date(year=2020, month=10, day=1))
+		agenda.agendar("Regar plantas", new Date(year=2020, month=10, day=1))
+		agenda.tarea("Preparar clase").estado(terminada)
+		
+		agenda.limpiar()
+		
+		assert.notThat(agenda.tieneTarea("Preparar clase"))
+		assert.that(agenda.tieneTarea("Regar plantas"))
+	}
+}

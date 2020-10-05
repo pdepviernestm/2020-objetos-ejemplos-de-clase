@@ -1,0 +1,79 @@
+import tarea.*
+import estados.*
+
+describe "Tarea" {
+	method nuevaTareaConEstado(unEstado) {
+		return self.nuevaTareaConFechaLimiteYEstado(
+			new Date(year=2020, month=10, day=2),
+			unEstado
+		)
+	}
+	method nuevaTareaConFechaLimiteYEstado(unaFecha, unEstado) {
+		return new Tarea(descripcion="Preparar clase",
+						estado=unEstado,
+						fechaLimite=unaFecha)
+	}
+
+	test "si está para hacer está pendiente" {
+		const tarea = self.nuevaTareaConEstado(paraHacer)
+		
+		assert.that(tarea.pendiente())
+	}
+	test "si está en progreso está pendiente" {
+		const tarea = self.nuevaTareaConEstado(enProgreso)
+								
+		assert.that(tarea.pendiente())
+	}
+	test "si está terminada no está pendiente" {
+		const tarea = self.nuevaTareaConEstado(terminada)
+								
+		assert.notThat(tarea.pendiente())
+	}
+	test "si está cancelada no está pendiente" {
+		const tarea = self.nuevaTareaConEstado(cancelada)
+								
+		assert.notThat(tarea.pendiente())
+	}
+	test "puedo pasarla a otro estado" {
+		const tarea = self.nuevaTareaConEstado(paraHacer)
+								
+		tarea.estado(terminada)
+		
+		assert.equals(terminada, tarea.estado())
+	}
+	test "si no está pendiente no está atrasada para ninguna fecha" {
+		const tarea = self.nuevaTareaConEstado(terminada)
+								
+		assert.notThat(tarea.atrasadaPara(new Date(year=2020, month=10, day=1)))
+	}
+	test "dada cierta fecha, si está pendiente y su fecha límite
+			es anterior a esa fecha entonces está atrasada" {
+		const tarea = self.nuevaTareaConFechaLimiteYEstado(
+			new Date(year=2020, month=10, day=1),
+			paraHacer			
+		)
+
+		assert.that(tarea.atrasadaPara(new Date(year=2020, month=10, day=2)))		
+	}
+	test "dada cierta fecha, si está pendiente y su fecha límite
+			es la misma a esa fecha entonces no está atrasada" {
+		const tarea = self.nuevaTareaConFechaLimiteYEstado(
+			new Date(year=2020, month=10, day=1),
+			paraHacer
+		)			
+		
+		assert.notThat(tarea.atrasadaPara(new Date(year=2020, month=10, day=1)))
+	}
+	test "le puedo agregar una etiqueta" {
+		const tarea = self.nuevaTareaConEstado(paraHacer)
+		
+		tarea.agregarEtiqueta("facu")
+		
+		assert.that(tarea.tieneEtiqueta("facu"))
+	}
+	test "si le pregunto si tiene una etiqueta que no le agregué me da falso" {
+		const tarea = self.nuevaTareaConEstado(paraHacer)
+		
+		assert.notThat(tarea.tieneEtiqueta("facu"))
+	}
+}
