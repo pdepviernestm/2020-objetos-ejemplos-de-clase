@@ -1,12 +1,15 @@
 class Ave {
 	var energia
 	var ciudad
-	method volarA(otraCiudad) {
-		if(self.energiaRequeridaParaVolarA(otraCiudad) > energia) {
-		self.error("No tengo energia suficiente para volar")
+	method validarQuePuedeVolarA(otraCiudad) {
+		if(self.energiaRequeridaParaVolarA(otraCiudad) > energia){
+			self.error("No tengo energia suficiente para volar")
+		}
 	}
-	energia -= ciudad.distanciaHasta(otraCiudad)
-	ciudad = otraCiudad
+	method volarA(otraCiudad) {
+	    self.validarQuePuedeVolarA(otraCiudad)
+	    energia -= ciudad.distanciaHasta(otraCiudad)
+	    ciudad = otraCiudad
 	}
 
 	method transportarA(otraCiudad) {

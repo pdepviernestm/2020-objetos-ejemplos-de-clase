@@ -1,3 +1,4 @@
+import bandada.*
 import ave.*
 import ciudad.*
 import wollok.game.*
@@ -55,3 +56,79 @@ test "cuando un ave descansa recupera 20 de energia" {
   assert.equals(22, pepita.energia())
 }
 
+test "hacer descansar a una bandada de aves hace descansar a cada ave que la forma" {
+  const puebloPaleta = new Ciudad(ubicacion=new Position(x=1, y=1), produccion="alfajores")
+  const pepita = new Ave(energia=2, ciudad=puebloPaleta)
+  const josefa = new Ave(energia=5, ciudad=puebloPaleta)
+  const bandada = new Bandada(aves=[pepita, josefa])
+  
+  bandada.descansar()
+  
+  assert.equals(22, pepita.energia())
+  assert.equals(25, josefa.energia())
+}
+
+test "hacer viajar a una bandada hace viajar a cada ave al destino" {
+  const puebloPaleta = new Ciudad(ubicacion=new Position(x=1, y=1), produccion="alfajores")
+  const ciudadCeleste = new Ciudad(ubicacion=new Position(x=0, y=1), produccion="yerba")
+  const ciudadVerde = new Ciudad(ubicacion=new Position(x=1, y=2), produccion="menta")
+  const pepita = new Ave(energia=2, ciudad=ciudadVerde)
+  const josefa = new Ave(energia=3, ciudad=ciudadCeleste)
+  const bandada = new Bandada(aves=[pepita, josefa])
+  
+  bandada.volarA(puebloPaleta)
+  
+  assert.equals(1, pepita.energia())
+  assert.equals(2, josefa.energia())
+  assert.equals(puebloPaleta, pepita.ciudad())
+  assert.equals(puebloPaleta, josefa.ciudad())
+}
+
+test "hacer viajar a una bandada cuando una de sus aves no tiene suficiente energia falla y ningun ave vuela" {
+  const puebloPaleta = new Ciudad(ubicacion=new Position(x=1, y=1), produccion="alfajores")
+  const ciudadCeleste = new Ciudad(ubicacion=new Position(x=0, y=1), produccion="yerba")
+  const ciudadVerde = new Ciudad(ubicacion=new Position(x=1, y=2), produccion="menta")
+  const pepita = new Ave(energia=2, ciudad=ciudadVerde)
+  const josefa = new Ave(energia=0, ciudad=ciudadCeleste)
+  const bandada = new Bandada(aves=[pepita, josefa])
+  
+  assert.throwsExceptionWithMessage("No tengo energia suficiente para volar", { bandada.volarA(puebloPaleta) } )
+  
+  assert.equals(2, pepita.energia())
+  assert.equals(0, josefa.energia())
+  assert.equals(ciudadVerde, pepita.ciudad())
+  assert.equals(ciudadCeleste, josefa.ciudad())
+}
+
+test "hacer transportar a una bandada cuando una de sus aves no tiene suficiente energia falla y ningun ave vuela" {
+  const puebloPaleta = new Ciudad(ubicacion=new Position(x=1, y=1), produccion="alfajores")
+  const ciudadCeleste = new Ciudad(ubicacion=new Position(x=0, y=1), produccion="yerba")
+  const ciudadVerde = new Ciudad(ubicacion=new Position(x=1, y=2), produccion="menta")
+  const pepita = new Ave(energia=2, ciudad=ciudadVerde)
+  const josefa = new Ave(energia=0, ciudad=ciudadCeleste)
+  const bandada = new Bandada(aves=[pepita, josefa])
+  puebloPaleta.necesitar("yerba")
+  
+  assert.throwsExceptionWithMessage("No tengo energia suficiente para volar", { bandada.transportarA(puebloPaleta) } )
+  
+  assert.notThat(puebloPaleta.satisfecha())
+  assert.equals(ciudadVerde, pepita.ciudad())
+  assert.equals(ciudadCeleste, josefa.ciudad())
+}
+
+test "hacer transportar a una bandada hace que las aves lleven los productos de las ciudades en las que estaban" {
+  const puebloPaleta = new Ciudad(ubicacion=new Position(x=1, y=1), produccion="alfajores")
+  const ciudadCeleste = new Ciudad(ubicacion=new Position(x=0, y=1), produccion="yerba")
+  const ciudadVerde = new Ciudad(ubicacion=new Position(x=1, y=2), produccion="menta")
+  const pepita = new Ave(energia=2, ciudad=ciudadVerde)
+  const josefa = new Ave(energia=2, ciudad=ciudadCeleste)
+  const bandada = new Bandada(aves=[pepita, josefa])
+  puebloPaleta.necesitar("yerba")
+  puebloPaleta.necesitar("menta")
+  
+  bandada.transportarA(puebloPaleta)
+  
+  assert.that(puebloPaleta.satisfecha())
+  assert.equals(puebloPaleta, josefa.ciudad())
+  assert.equals(puebloPaleta, pepita.ciudad())
+}
