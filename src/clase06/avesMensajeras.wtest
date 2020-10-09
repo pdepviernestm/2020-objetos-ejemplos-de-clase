@@ -12,3 +12,13 @@ test "volar a una ciudad resta tanta energia como distancia entre ciudades y hac
  assert.equals(1, pepita.energia())
  assert.equals(ciudadCeleste, pepita.ciudad())
 }
+
+test "no puede volar a una ciudad para la que necesitaria mas energia de la que tiene" {
+ const puebloPaleta = new Ciudad(ubicacion=new Position(x=1, y=1))
+ const ciudadAzafran = new Ciudad(ubicacion=new Position(x=5, y=5))
+ const pepita = new Ave(energia=2, ciudad=puebloPaleta)
+ 
+ assert.throwsExceptionWithMessage("No tengo energia suficiente para volar", { pepita.volarA(ciudadAzafran) })
+ assert.equals(2, pepita.energia())
+ assert.equals(puebloPaleta, pepita.ciudad())
+}
