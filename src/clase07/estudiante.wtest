@@ -1,10 +1,8 @@
 import clase07.estudiante.*
+import testHelper.*
+import clase07.actividades.*
 
 describe "Estudiante" {
-	method estudianteConcentradoConHorasDeEstudio(unasHorasDeEstudio) =
-		new Estudiante(energia=51, estresado=false, horasDeEstudio=unasHorasDeEstudio)
-	method estudianteDesconcentrado() = new Estudiante(energia=0)
-	
 	test "su nivel de concentracion cuando no esta estresado es su energia" {
 		const estudianteDesestresado = new Estudiante(energia=30, estresado=false)
 		
@@ -36,26 +34,65 @@ describe "Estudiante" {
 	}
 	
 	test "no esta preparado si estudio menos de 40 horas" {
-		const estudianteNoPreparado = self.estudianteConcentradoConHorasDeEstudio(39)
+		const estudianteNoPreparado = testHelper.estudianteConcentradoConHorasDeEstudio(39)
 		
 		assert.notThat(estudianteNoPreparado.preparado())
 	}
 	
 	test "no esta preparado si estudio 40 horas" {
-		const estudiantePreparado = self.estudianteConcentradoConHorasDeEstudio(40)
+		const estudiantePreparado = testHelper.estudianteConcentradoConHorasDeEstudio(40)
 		
 		assert.notThat(estudiantePreparado.preparado())
 	}
 	
 	test "no esta preparado si no esta concentrado" {
-		const estudianteNoPreparado = self.estudianteDesconcentrado()
+		const estudianteNoPreparado = testHelper.estudianteDesconcentrado()
 		
 		assert.notThat(estudianteNoPreparado.preparado())
 	}
 	
 	test "esta preparado si esta concentrado y estudio mas de 40 horas" {
-		const estudiantePreparado = self.estudianteConcentradoConHorasDeEstudio(41)
+		const estudiantePreparado = testHelper.estudianteConcentradoConHorasDeEstudio(41)
 		
 		assert.that(estudiantePreparado.preparado())
+	}
+	
+	test "si su rutina de estudio esta vacía hacerla lo deja igual que como estaba" {
+		const estudiante = new Estudiante(energia=0, estresado=false, horasDeEstudio=0,
+										  rutinaDeEstudio=[])
+
+		estudiante.hacerRutinaDeEstudio()
+		
+		assert.equals(0, estudiante.energia())
+		assert.notThat(estudiante.estresado())
+		assert.equals(0, estudiante.horasDeEstudio())
+	}
+	
+	test "si su rutina de estudio tiene tareas que no puede hacer lo deja igual que como estaba" {
+		const estudiante = new Estudiante(energia=0, estresado=false, horasDeEstudio=0,
+										  rutinaDeEstudio=[estudiar.temaDificil(5)])
+
+		estudiante.hacerRutinaDeEstudio()
+
+		assert.equals(0, estudiante.energia())
+		assert.notThat(estudiante.estresado())
+		assert.equals(0, estudiante.horasDeEstudio())
+	}
+	
+	test "hace su una rutina de estudio, haciendo una a una aquellas actividades que pueda hacer
+			y salteandose las que no" {
+		const tareaQueNoPuedeHacerPorqueAunNoEstaConcentrado = estudiar.temaDificil(5)
+		const estudiante = new Estudiante(energia=0, estresado=false, horasDeEstudio=0,
+										  rutinaDeEstudio=[tareaQueNoPuedeHacerPorqueAunNoEstaConcentrado,
+										  				   new TomarCafe(cafeina=250),
+										  				   new TomarCafe(cafeina=250),
+										  				   new EscucharMusica(),
+										  				   estudiar.temaDificil(5)])
+
+		estudiante.hacerRutinaDeEstudio()
+
+		assert.equals(10, estudiante.energia())
+		assert.notThat(estudiante.estresado())
+		assert.equals(5, estudiante.horasDeEstudio())
 	}
 }

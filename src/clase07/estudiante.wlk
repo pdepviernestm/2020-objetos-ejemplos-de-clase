@@ -1,13 +1,26 @@
 class Estudiante {
-  const energia = 0
-  var property horasDeEstudio = 0
-  var property estresado = false
+	var property energia = 0
+	var property horasDeEstudio = 0
+	var property estresado = false
+	const rutinaDeEstudio = []
+  
+	method cansarse(cantidad) {
+		energia = (energia - cantidad).max(0)
+	}
 
-  method concentracion() = if(estresado) energia / 2 else energia
+	method recuperarEnergia(cantidad) { energia += cantidad }
 
-  method concentrado() = self.concentracion() > 50
+	method concentracion() = if(estresado) energia / 2 else energia
 
-  method preparado() = horasDeEstudio > 40 && self.concentrado()
+	method concentrado() = self.concentracion() > 50
 
+	method preparado() = horasDeEstudio > 40 && self.concentrado()
+
+	method hacerRutinaDeEstudio() {
+		rutinaDeEstudio.forEach { actividad =>
+			if(actividad.laPuedeHacer(self))
+			actividad.hacerse(self)
+		}
+	}
 }
 
