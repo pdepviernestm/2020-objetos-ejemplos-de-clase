@@ -6,24 +6,22 @@ Esta parte va a ser la más larga, vamos a implementar el modelo descripto a con
 
 ## Animales
 
-En un campo hay que atender a los animales, que tienen varias necesidades. Consideremos vacas y gallinas, que tienen estas características.
+En un campo hay que alimentar a los animales. Consideremos vacas y gallinas, que tienen estas características.
 
 **Vaca**
 
-* Cuando come aumenta el peso en lo que comió / 3 y le da sed.
-* Cuando bebe se le va la sed y pierde 500 g de peso.
+* Cuando come aumenta el peso en lo que comió / 3.
 * Tiene hambre si pesa menos de 200 kg.	
 
 **Gallina**
 
-* Cuando come y bebe no se observa ningún cambio, siempre pesa 4 kg.
-* Siempre tiene hambre, nunca tiene sed.
+* Cuando come no se observa ningún cambio, siempre pesa 4 kg.
+* Además, siempre tiene hambre.
 
 ## Dispositivos
 
 También hay distintos dispositivos de atención automática a los animales:
 
-* Bebederos: dan de beber a un animal, son útiles para atender a los animales con sed. 
 * Comederos: cada comedero da de comer una cantidad fija que deberá indicarse para cada dispositivo. Son útiles para atender a los animales con hambre que pesen menos de lo que soporta el comedero. Debemos considerar que **no debería ser posible atender en un comedero a animales que pesen más que lo que el dispositivo soporta**.
 * Comederos Recargables: Deberían comportarse como comederos normales, pero tienen una cantidad de raciones en stock que disminuye en uno cada vez que da de comer a un animal. Además, queremos poder recargarle una cantidad de comida (en kgs), lo cual debería aumentar la cantidad de raciones en stock según cuantas raciones representa esa cantidad de comida.
 
@@ -33,8 +31,8 @@ Modelar lo que se describió de forma tal de poder:
 * Hacer que un animal se atienda en un dispositivo.
 
 Algunas preguntas como para pensar con que tests podriamos arrancar:
-- ¿Es util un bebedero para un animal que no tiene sed?
-  - ¿Cuando tiene sed una vaca?¿Y un cerdo?¿Y una gallina?
+- ¿Es util un comedero para un animal que no tiene hambre?
+  - ¿Cuando tiene hambre una vaca?¿Y una gallina?
 - ¿Es util un comedero para atender a un animal que pesa menos de lo que soporta? ¿Y el caso contrario? ¿Y si pesa lo mismo?
 
 ## La granja
@@ -52,7 +50,7 @@ Además, queremos poder hacer que la granja recargue un comedero recargable, lo 
 ### ¿Consumo energético?
 
 Cada dispositivo tiene un consumo energético que necesitamos conocer para saber cuanto le va a costar a la granja atender a un animal.
-El consumo energético de un bebedero es 10, el de un comedero es 20 * el peso máximo que soporta y el de un comedero recargable es 2 * el stock de raciones que tenga en ese momento.
+El consumo energético de un comedero es 20 * el peso máximo que soporta y el de un comedero recargable es 2 * el stock de raciones que tenga en ese momento.
 
 ## Parte II: El juego
 

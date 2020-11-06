@@ -12,7 +12,6 @@ const vaca = new CosoConImagen(image="clase09/vaca.png")// una vaca que pesa 110
 const gallina = new CosoConImagen(image="clase09/gallina.png")// una gallina
 const comedero = new CosoConImagen(image="clase09/comedero.png")//un comedero que soporta maximo 30kgs y cuya racion es de 2
 const comederoRecargable = new CosoConImagen(image="clase09/comedero_recargable.png")//un comedero recargable que soporta maximo 80kgs, cuya racion es de 5 y que cuenta con 5 stocks al iniciar
-const bebedero = new CosoConImagen(image="clase09/bebedero.png")//un bebedero
 const laGranja = new CosoConImagen(image="clase09/granja.png")//la granja
 
 // Nota: Al pasar el mouse por cada uno de los dispositivos o la granja, se va a mostrar su estado interno.
@@ -36,9 +35,8 @@ object configuracionJuego {
 		game.title("Atención de Animales")
 	}
 	method configurarDispositivos() {
-		const dispositivos = [comedero, comederoRecargable, bebedero]
+		const dispositivos = [comedero, comederoRecargable]
 		game.addVisualIn(comedero, game.at(1,5))
-		game.addVisualIn(bebedero, game.at(2, 2))
 		game.addVisualIn(comederoRecargable, game.at(4, 4))
 		
 		dispositivos.forEach {dispositivo =>
