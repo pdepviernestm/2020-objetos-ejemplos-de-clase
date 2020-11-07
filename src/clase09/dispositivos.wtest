@@ -1,0 +1,111 @@
+import clase09.vaca.*
+import clase09.dispositivos.*
+import clase09.gallina.*
+
+describe "Comedero" {
+	test "no es util para un animal sin hambre" {
+		const vacaSinHambre = new Vaca(peso=300)
+		const comedero = new Comedero(racion=10, capacidadMaxima=500)
+		
+		assert.notThat(comedero.esUtilPara(vacaSinHambre))
+	}
+	
+	test "no es util para un animal que excede su capacidad" {
+		const vacaPesada = new Vaca(peso=100)
+		const comedero = new Comedero(racion=10, capacidadMaxima=50)
+		
+		assert.notThat(comedero.esUtilPara(vacaPesada))
+	}
+	
+	test "es util para un animal con hambre que no excede su capacidad" {
+		const vacaConHambre = new Vaca(peso=100)
+		const comedero = new Comedero(racion=10, capacidadMaxima=200)
+		
+		assert.that(comedero.esUtilPara(vacaConHambre))
+	}
+	
+	test "cuando atiende a un animal le da de comer una racion de comida" {
+		const comedero = new Comedero(racion=30, capacidadMaxima=500)
+		const vaca = new Vaca(peso=100)
+		
+		comedero.atender(vaca)
+		
+		assert.equals(110, vaca.peso())
+	}
+	
+	test "no puede atender a un animal que excede su capacidad maxima" {
+		const vacaPesada = new Vaca(peso=200)
+		const comedero = new Comedero(racion=30, capacidadMaxima=100)
+		
+		assert.throwsExceptionWithMessage("No se puede atender al animal porque excede la capacidad del comedero", { comedero.atender(vacaPesada) })
+		assert.equals(200, vacaPesada.peso())
+	}
+	
+	test "el consumo de un comedero es 20 * el peso maximo que soporta" {
+		const comedero = new Comedero(racion=30, capacidadMaxima=100)
+		
+		assert.equals(2000, comedero.consumo())
+	}
+}
+
+describe "Comedero recargable" {
+	test "no es util para un animal sin hambre" {
+		const vacaSinHambre = new Vaca(peso=300)
+		const comedero = new ComederoRecargable(racion=10, capacidadMaxima=500, racionesEnStock=1)
+		
+		assert.notThat(comedero.esUtilPara(vacaSinHambre))
+	}
+	
+	test "no es util para un animal que excede su capacidad" {
+		const vacaPesada = new Vaca(peso=100)
+		const comedero = new ComederoRecargable(racion=10, capacidadMaxima=50, racionesEnStock=1)
+		
+		assert.notThat(comedero.esUtilPara(vacaPesada))
+	}
+	
+	test "es util para un animal con hambre que no excede su capacidad" {
+		const vacaConHambre = new Vaca(peso=100)
+		const comedero = new ComederoRecargable(racion=10, capacidadMaxima=200, racionesEnStock=1)
+		
+		assert.that(comedero.esUtilPara(vacaConHambre))
+	}
+	
+	test "cuando atiende a un animal le da de comer una racion de comida y baja su stock en 1" {
+		const comedero = new ComederoRecargable(racion=30, capacidadMaxima=500, racionesEnStock=1)
+		const vaca = new Vaca(peso=100)
+		
+		comedero.atender(vaca)
+		
+		assert.equals(110, vaca.peso())
+		assert.equals(0, comedero.racionesEnStock())
+	}
+	
+	test "no puede atender a un animal que excede su capacidad maxima" {
+		const vacaPesada = new Vaca(peso=200)
+		const comedero = new ComederoRecargable(racion=30, capacidadMaxima=100, racionesEnStock=1)
+		
+		assert.throwsExceptionWithMessage("No se puede atender al animal porque excede la capacidad del comedero", { comedero.atender(vacaPesada) })
+		assert.equals(200, vacaPesada.peso())
+	}
+	
+	test "recargar cierta cantidad de kilos de comida aumenta el stock en esa cantidad de comida / los kilos de una racion" {
+		const comedero = new ComederoRecargable(racion=10, racionesEnStock=0, capacidadMaxima=100)
+		
+		comedero.recargar(30)
+		
+		assert.equals(3, comedero.racionesEnStock())
+	}
+	
+	test "no puede atender a un animal si no tiene raciones" {
+		const comedero = new ComederoRecargable(racion=30, capacidadMaxima=100, racionesEnStock=0)
+		
+		assert.throwsExceptionWithMessage("Un comedero recargable no puede atender sin raciones en stock", { comedero.atender(new Gallina())})
+	}
+	
+	test "el consumo de un comedero es 2 * las raciones de stock restantes" {
+		const comedero = new ComederoRecargable(racion=30, capacidadMaxima=100, racionesEnStock=3)
+		
+		assert.equals(6, comedero.consumo())
+	}
+
+}

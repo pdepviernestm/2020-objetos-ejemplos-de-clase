@@ -1,24 +1,24 @@
 import clase09.game.prompts.*
 import wollok.game.*
 import clase09.game.setupJuego.*
+import clase09.exceptions.*
 
 object juegoGranja {
-	method seAtiende(animal, dispositivo) {	
-		self.error("Falta implementar")
-		// TODO:
-		// hacer que la granja atienda a un animal con ese dispositivo
+	var property granja
 
-		// Queremos que si la atencion falla porque no habia suficiente alimento para un animal en un dispositivo recargable,
-		// nos muestre el prompt de recarga de alimento, 
-		// lo cual se puede hacer con: new PromptRecargar(elDispositivoRecargable).mostrar()
-		
-		// También queremos que si sucede cualquier error que no contemplamos en el dominio, se muestre el prompt
-		// de que algo salió mal, lo cual se puede hacer con: promptError.mostrar()
+	method seAtiende(animal, dispositivo) {	
+		try {
+			granja.atenderCon(dispositivo, animal)			
+		} catch error: NoHayMasAlimentoEnStockException {
+			new PromptRecargar(recargable=dispositivo).mostrar()
+		} catch error: DomainException {
+			throw error // dejamos que siga su curso y wollok game lo maneje
+		} catch error: Exception {
+			promptError.mostrar() // esto va a hacer que cierre el juego, va a atrapar las Exception que NO sean DomainException porque esas ya se atraparon arriba
+		}
 	}
 
 	method recargar(dispositivoRecargable) {
-		self.error("Falta implementar")
-		// TODO:
-		// hacer que la granja recargue al dispositivo recargable
+		granja.recargar(dispositivoRecargable)
 	}
 }

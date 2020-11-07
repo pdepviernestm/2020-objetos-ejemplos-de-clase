@@ -1,0 +1,45 @@
+import gallina.*
+import vaca.*
+
+
+describe "vaca" {
+	test "tiene hambre si pesa menos de 200kg" {
+		const vaca = new Vaca(peso=199)
+		
+		assert.that(vaca.tieneHambre())
+	}
+	test "no tiene hambre si pesa 200kg" {
+		const vaca = new Vaca(peso=200)
+		
+		assert.notThat(vaca.tieneHambre())
+	}	
+	test "tiene hambre si pesa mas de 200kg" {
+		const vaca = new Vaca(peso=201)
+		
+		assert.notThat(vaca.tieneHambre())
+	}	
+	test "cuando come aumenta el peso en lo que comio / 3" {
+		const vaca = new Vaca(peso=100)
+		
+		vaca.comer(30)
+		
+		assert.equals(110, vaca.peso())
+	}
+}
+
+describe "gallina" {
+	test "siempre tiene hambre" {
+		const gallina = new Gallina()
+		
+		assert.that(gallina.tieneHambre())
+	}
+	
+	test "comer no cambia su peso, siempre pesa 4kg" {
+		const gallina = new Gallina()
+		assert.equals(4, gallina.peso())
+
+		gallina.comer(100)
+		
+		assert.equals(4, gallina.peso())
+	}
+}

@@ -1,0 +1,2 @@
+class NoSePudoAtenderException inherits DomainException {}
+class NoHayMasAlimentoEnStockException inherits NoSePudoAtenderException {}

@@ -1,0 +1,61 @@
+import granja.*
+import clase09.dispositivos.*
+import clase09.vaca.*
+import clase09.granja.*
+
+describe "Granja" {
+	test "atender a un animal con un dispositivo util aumenta el puntaje en 5 y disminuye el dinero en el consumo del dispositivo" {
+		const comedero = new Comedero(capacidadMaxima=200, racion=30)
+		const vacaConHambre = new Vaca(peso=100)
+		const granja = new Granja(dinero=5000, puntaje=0)
+		
+		granja.atenderCon(comedero, vacaConHambre)
+		
+		assert.equals(1000, granja.dinero())
+		assert.equals(5, granja.puntaje())
+		assert.equals(110, vacaConHambre.peso())
+	}
+	
+	test "no puede atender a un animal si no puede pagar la atencion del dispositivo" {
+		const comedero = new Comedero(capacidadMaxima=100, racion=30)
+		const vacaConHambre = new Vaca(peso=100)
+		const granja = new Granja(dinero=1000, puntaje=0)
+		
+		assert.throwsExceptionWithMessage("No hay suficientes fondos para atender un animal. Se quería gastar 2000 pero la granja tiene 1000",
+										  { granja.atenderCon(comedero, vacaConHambre) })
+		assert.equals(1000, granja.dinero())
+		assert.equals(0, granja.puntaje())
+		assert.equals(100, vacaConHambre.peso())
+	}
+	
+	test "si falla la atencion pierde 3 puntos de puntaje" {
+		const comedero = new Comedero(capacidadMaxima=100, racion=30)
+		const vacaConHambre = new Vaca(peso=105)
+		const granja = new Granja(dinero=5000, puntaje=5)
+		
+		assert.throwsExceptionWithMessage("No se puede atender al animal porque excede la capacidad del comedero", { granja.atenderCon(comedero, vacaConHambre) })
+		assert.equals(5000, granja.dinero())
+		assert.equals(2, granja.puntaje())
+		assert.equals(105, vacaConHambre.peso())
+	}
+	
+	test "recargar un dispositivo recargable le agrega 20kg de comida al mismo y disminuye el dinero de la granja en 500" {
+		const granja = new Granja(dinero=1000, puntaje=0)
+		const comederoRecargable = new ComederoRecargable(racionesEnStock=0, racion=2, capacidadMaxima=10)
+		
+		granja.recargar(comederoRecargable)
+		
+		assert.equals(10, comederoRecargable.racionesEnStock())
+	}
+	
+	test "recargar un dispositivo si la granja tiene menos de 500 de dinero falla" {
+		const granja = new Granja(dinero=100, puntaje=0)
+		const comederoRecargable = new ComederoRecargable(racionesEnStock=0, racion=2, capacidadMaxima=10)
+		
+		assert.throwsExceptionWithMessage("No hay suficientes fondos para recargar un dispositivo. Se quería gastar 500 pero la granja tiene 100",
+										  { granja.recargar(comederoRecargable) }
+		)
+		
+		assert.equals(0, comederoRecargable.racionesEnStock())
+	}
+}
